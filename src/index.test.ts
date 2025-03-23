@@ -3,6 +3,8 @@ import { platform } from 'node:os';
 import { expect, test } from 'vitest';
 import { ocr } from '.';
 
+console.log({ platform: platform(), iswsl: iswsl() });
+
 test('basic', async () => {
   if (platform() != 'win32' && !iswsl()) {
     return test.skip('basic');
