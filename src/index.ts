@@ -23,7 +23,7 @@ export type OcrResult = {
     }[];
   }[];
   Text: string;
-  TextAngle: number;
+  TextAngle: number | null;
 };
 
 export async function ocr(
