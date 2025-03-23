@@ -2,7 +2,7 @@ import { spawn } from 'node:child_process';
 import { resolve } from 'node:path';
 
 function cmd(...command: string[]) {
-  let p = spawn(command[0], command.slice(1));
+  const p = spawn(command[0], command.slice(1));
   const stdout: string[] = [];
   const stderr: string[] = [];
   return new Promise<{ stdout: string; stderr: string; code: number | null }>(

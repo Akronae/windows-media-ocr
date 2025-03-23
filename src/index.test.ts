@@ -1,7 +1,13 @@
+import { existsSync, readFileSync } from 'node:fs';
+import { platform } from 'node:os';
 import { expect, test } from 'vitest';
 import { ocr } from '.';
 
 test('basic', async () => {
+  if (platform() != 'win32' && !iswsl()) {
+    return test.skip('basic');
+  }
+
   const res = await ocr('assets/lorem.png');
   expect(res).toStrictEqual({
     Lines: [
@@ -85,3 +91,12 @@ test('basic', async () => {
     TextAngle: 0,
   });
 });
+
+async function iswsl() {
+  if (platform() == 'linux') {
+    if (!existsSync('/proc/version')) return false;
+    const version = await readFileSync('/proc/version', 'utf-8');
+    return version.toLowerCase().includes('wsl');
+  }
+  return false;
+}
