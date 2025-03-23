@@ -1,6 +1,7 @@
+import { bin } from '@/src';
 import * as esbuild from 'esbuild';
-import { rm } from 'fs/promises';
-import { relative } from 'path';
+import { cp, rm } from 'fs/promises';
+import { join, relative } from 'path';
 import { replaceTscAliasPaths } from 'tsc-alias';
 import * as ts from 'typescript';
 
@@ -39,7 +40,6 @@ export async function build(args: string[]): Promise<void> {
       outExtension: { '.js': '.mjs' },
       bundle: false,
       minify: false,
-      // sourcemap: "external",
       treeShaking: true,
       loader: { '.node': 'binary' },
       packages: 'external',
@@ -52,7 +52,6 @@ export async function build(args: string[]): Promise<void> {
       outExtension: { '.js': '.cjs' },
       bundle: false,
       minify: false,
-      // sourcemap: "external",
       treeShaking: true,
       loader: { '.node': 'binary' },
       packages: 'external',
@@ -82,6 +81,9 @@ export async function build(args: string[]): Promise<void> {
     fileExtensions: { inputGlob: '{js,cjs}', outputCheck: ['cjs', 'json'] },
   });
   await replaceTscAliasPaths({ resolveFullPaths: true });
+  await cp(bin, join(outdir, bin), {
+    recursive: true,
+  });
   console.timeEnd('Build time');
 }
 

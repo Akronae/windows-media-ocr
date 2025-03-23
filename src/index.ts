@@ -1,5 +1,55 @@
 import { spawn } from 'node:child_process';
-import { resolve } from 'node:path';
+import { join, resolve } from 'node:path';
+
+export const bin = join('assets', 'windows_media_ocr_cli.exe');
+
+export type OcrResultMode = 'json' | 'text';
+export type OcrResult = {
+  Lines: {
+    Text: string;
+    Words: {
+      BoundingRect: {
+        X: number;
+        Y: number;
+        Width: number;
+        Height: number;
+        Left: number;
+        Top: number;
+        Right: number;
+        Bottom: number;
+        IsEmpty: boolean;
+      };
+      Text: string;
+    }[];
+  }[];
+  Text: string;
+  TextAngle: number;
+};
+
+export async function ocr(
+  file: string,
+  {
+    language,
+    mode,
+  }: {
+    language?: string;
+    mode?: OcrResultMode;
+  } = {}
+): Promise<OcrResult> {
+  const res = await cmd(
+    resolve(import.meta.dirname, '..', bin),
+    ...(language ? ['--language', language] : []),
+    ...(mode ? ['--mode', mode] : []),
+    '--file',
+    file
+  );
+
+  if (res.stderr) {
+    throw new Error(res.stderr);
+  } else {
+    return JSON.parse(res.stdout);
+  }
+}
 
 function cmd(...command: string[]) {
   const p = spawn(command[0], command.slice(1));
@@ -19,30 +69,3 @@ function cmd(...command: string[]) {
     }
   );
 }
-
-export async function ocr(
-  file: string,
-  {
-    language,
-    mode,
-  }: {
-    language?: string;
-    mode?: OcrResultMode;
-  } = {}
-) {
-  const res = await cmd(
-    resolve(import.meta.dirname, '..', 'assets', 'windows_media_ocr_cli.exe'),
-    ...(language ? ['--language', language] : []),
-    ...(mode ? ['--mode', mode] : []),
-    '--file',
-    file
-  );
-
-  if (res.stderr) {
-    throw new Error(res.stderr);
-  } else {
-    return JSON.parse(res.stdout);
-  }
-}
-
-export type OcrResultMode = 'json' | 'text';
