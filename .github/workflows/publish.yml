@@ -1,0 +1,45 @@
+name: publish
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - name: Setup npmrc
+        run: 'echo "npmAuthToken: ${{secrets.NPM_TOKEN}}" >> .yarnrc.yml'
+      - run: corepack enable
+      - run: corepack install
+      - name: Install modules
+        run: yarn install
+      - name: Run lint task
+        run: yarn lint
+      - name: Run tests
+        run: yarn test
+
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+      - name: Setup npmrc
+        run: 'echo "npmAuthToken: ${{secrets.NPM_TOKEN}}" >> .yarnrc.yml'
+      - run: corepack enable
+      - run: corepack install
+      - run: yarn install
+      - run: yarn build
+      - run: yarn npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

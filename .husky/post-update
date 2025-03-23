@@ -1,0 +1,4 @@
+#!/bin/sh
+# GENERATED FILE BY @airporting/airpkg - DO NOT EDIT MANUALLY
+
+yarn install

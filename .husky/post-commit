@@ -1,0 +1,9 @@
+#!/bin/sh
+# GENERATED FILE BY @airporting/airpkg - DO NOT EDIT MANUALLY!
+
+COMMITS=$(git log $(git branch --show-current) --not --remotes --oneline)
+
+if ! echo "$COMMITS" | grep -q "chore: bump"; then
+  echo "[pre-push]: pushing without version change dectected, running 'yarn v:patch'"
+  yarn v:patch
+fi

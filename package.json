@@ -1,0 +1,62 @@
+{
+  "name": "windows-media-ocr",
+  "version": "0.0.1",
+  "files": [
+    "dist",
+    "assets"
+  ],
+  "type": "module",
+  "main": "./dist/src/index.cjs",
+  "module": "./dist/src/index.mjs",
+  "types": "./dist/src/index.d.ts",
+  "exports": {
+    ".": {
+      "require": {
+        "types": "./dist/src/index.d.ts",
+        "default": "./dist/src/index.cjs"
+      },
+      "import": {
+        "types": "./dist/src/index.d.ts",
+        "default": "./dist/src/index.mjs"
+      }
+    },
+    "./*": {
+      "require": {
+        "types": "./*.d.ts",
+        "default": "./*"
+      },
+      "import": {
+        "types": "./*.d.ts",
+        "default": "./*"
+      }
+    }
+  },
+  "scripts": {
+    "build": "tsx scripts/build",
+    "lint": "prettier --log-level silent --write . && eslint . --fix",
+    "prepare": "husky",
+    "test": "vitest run --reporter verbose",
+    "v:major": "npm version major -m \"chore: bump major to %s\"",
+    "v:minor": "npm version minor -m \"chore: bump minor to %s\"",
+    "v:patch": "npm version patch -m \"chore: bump patch to %s\""
+  },
+  "devDependencies": {
+    "@commitlint/cli": "19.8.0",
+    "@commitlint/config-conventional": "19.8.0",
+    "@commitlint/types": "19.8.0",
+    "@eslint/js": "9.23.0",
+    "@types/node": "22.13.11",
+    "esbuild": "0.25.1",
+    "eslint": "9.23.0",
+    "eslint-config-prettier": "10.1.1",
+    "husky": "9.1.7",
+    "prettier": "3.5.3",
+    "tsc-alias": "1.8.11",
+    "tsx": "4.19.3",
+    "typescript": "5.8.2",
+    "typescript-eslint": "8.27.0",
+    "vite-tsconfig-paths": "5.1.4",
+    "vitest": "3.0.9"
+  },
+  "packageManager": "yarn@4.1.1"
+}
